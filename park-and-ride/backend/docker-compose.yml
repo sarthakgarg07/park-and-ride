@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: park-and-ride-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=park-and-ride
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - park-and-ride-network
+
+  mongo-express:
+    image: mongo-express
+    container_name: park-and-ride-mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+      - ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017/
+    depends_on:
+      - mongodb
+    networks:
+      - park-and-ride-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  park-and-ride-network:
+    driver: bridge 
