@@ -2,15 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { FiMapPin } from 'react-icons/fi';
 
 interface RideMapProps {
-  pickupLocation: string;
-  dropLocation: string;
+  pickupLocation?: string;
+  dropLocation?: string;
+  // Optional props for live tracking usage
+  routeCoordinates?: number[][]; // array of [x,y] pairs for a simplified SVG path
+  currentPosition?: number; // index within routeCoordinates indicating current point
 }
 
-const RideMap = ({ pickupLocation, dropLocation }: RideMapProps) => {
+const RideMap = ({ pickupLocation, dropLocation, routeCoordinates, currentPosition = 0 }: RideMapProps) => {
   const [loading, setLoading] = useState(false);
   
   // This is a simplified map component that doesn't use real maps API
   // In a real app, you would integrate with Google Maps or a similar service
+  
+  // Helper to convert routeCoordinates to an SVG path string (very simplified)
+  const routePath = (() => {
+    if (!routeCoordinates || routeCoordinates.length < 2) return '';
+    const [firstX, firstY] = routeCoordinates[0];
+    const segments = routeCoordinates.slice(1).map(([x, y]) => `L${x},${y}`).join(' ');
+    return `M${firstX},${firstY} ${segments}`;
+  })();
+  
+  const hasTracking = !!routeCoordinates && routeCoordinates.length >= 2;
+  const currentPoint = hasTracking
+    ? routeCoordinates[Math.min(Math.max(0, currentPosition), routeCoordinates.length - 1)]
+    : null;
   
   return (
     <div className="relative w-full h-80 bg-gray-100 rounded-lg overflow-hidden">
@@ -34,8 +50,24 @@ const RideMap = ({ pickupLocation, dropLocation }: RideMapProps) => {
               strokeWidth="2"
             />
             
-            {/* Route line if both locations are provided */}
-            {pickupLocation && dropLocation && (
+            {/* Route line for tracking or a dummy path when pickup/drop provided */}
+            {hasTracking ? (
+              <>
+                <path 
+                  d={routePath}
+                  fill="none"
+                  stroke="#6366F1"
+                  strokeWidth="3"
+                  strokeDasharray="5,5"
+                />
+                {currentPoint && (
+                  <>
+                    <circle cx={currentPoint[0]} cy={currentPoint[1]} r="8" fill="rgba(59,130,246,0.85)" />
+                    <circle cx={currentPoint[0]} cy={currentPoint[1]} r="4" fill="white" />
+                  </>
+                )}
+              </>
+            ) : pickupLocation && dropLocation ? (
               <>
                 {/* This is a dummy route - in a real app, you'd use actual coordinates */}
                 <path 
@@ -54,7 +86,7 @@ const RideMap = ({ pickupLocation, dropLocation }: RideMapProps) => {
                 <circle cx="240" cy="220" r="8" fill="rgba(239, 68, 68, 0.8)" />
                 <circle cx="240" cy="220" r="4" fill="white" />
               </>
-            )}
+            ) : null}
           </svg>
         </div>
       </div>
