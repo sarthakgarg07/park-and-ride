@@ -1,6 +1,8 @@
 # Park and Ride Application
 
 A modern web application that helps users find and book parking spots, as well as arrange rides to and from their destinations. Built with Next.js, TypeScript, and MongoDB.
+
+
 Deployed the project here, Go and checkout here : https://park-and-ride-seven.vercel.app/book-parking
 
 ## Features
