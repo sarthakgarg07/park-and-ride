@@ -1,15 +1,18 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 
-type User = {
+// Concrete user shape stored in localStorage when logged in
+interface UserInfo {
   name: string;
   email: string;
   isLoggedIn: boolean;
-} | null;
+}
+
+type User = UserInfo | null;
 
 interface AuthContextType {
   user: User;
-  login: (userData: Omit<User, 'isLoggedIn'>) => void;
+  login: (userData: Omit<UserInfo, 'isLoggedIn'>) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -35,7 +38,7 @@ export const isUserLoggedIn = (): boolean => {
     const storedUser = localStorage.getItem('parkAndRideUser');
     if (!storedUser) return false;
     
-    const parsedUser = JSON.parse(storedUser);
+    const parsedUser: UserInfo = JSON.parse(storedUser);
     return !!parsedUser?.isLoggedIn;
   } catch (error) {
     console.error('Error checking auth state:', error);
@@ -51,7 +54,7 @@ export const getUserData = (): User => {
     const storedUser = localStorage.getItem('parkAndRideUser');
     if (!storedUser) return null;
     
-    return JSON.parse(storedUser);
+    return JSON.parse(storedUser) as UserInfo;
   } catch (error) {
     console.error('Error getting user data:', error);
     return null;
@@ -72,7 +75,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         
         if (storedUser) {
           try {
-            const parsedUser = JSON.parse(storedUser);
+            const parsedUser: UserInfo = JSON.parse(storedUser);
             setUser(parsedUser);
           } catch (error) {
             console.error('Failed to parse user from localStorage', error);
@@ -87,10 +90,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   // Login function to store user data
-  const login = (userData: Omit<User, 'isLoggedIn'>) => {
+  const login = (userData: Omit<UserInfo, 'isLoggedIn'>) => {
     if (!userData) return;
     
-    const loggedInUser = {
+    const loggedInUser: UserInfo = {
       ...userData,
       isLoggedIn: true
     };
