@@ -281,7 +281,7 @@ const DashboardPage = () => {
           <h2 className="text-lg font-medium text-gray-900">Upcoming Bookings</h2>
         </div>
         <div className="divide-y divide-gray-200">
-          {userData.upcomingBookings.map((booking) => (
+          {userData.upcomingBookings.map((booking: any) => (
             <div key={booking.id} className="p-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-start space-x-4">
@@ -344,7 +344,7 @@ const DashboardPage = () => {
           <h2 className="text-lg font-medium text-gray-900">Recent Activity</h2>
         </div>
         <div className="divide-y divide-gray-200">
-          {userData.recentActivity.map((activity, index) => (
+          {userData.recentActivity.map((activity: any, index: number) => (
             <div key={index} className="p-6">
               <div className="flex justify-between items-center">
                 <div className="flex items-start space-x-4">
