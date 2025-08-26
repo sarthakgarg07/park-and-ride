@@ -12,8 +12,7 @@ import {
   FiSmartphone, 
   FiDollarSign, 
   FiMap, 
-  FiCalendar,
-  FiCar
+  FiCalendar
 } from 'react-icons/fi';
 
 export default function Home() {
