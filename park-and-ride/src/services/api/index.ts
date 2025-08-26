@@ -52,9 +52,9 @@ export const handleApiError = (error: any) => {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError;
     
-    // Get the error message from the response or use a default
-    const errorMessage = axiosError.response?.data?.message || 
-                        'Something went wrong. Please try again.';
+    // Safely read potential message from response data
+    const data = axiosError.response?.data as { message?: string } | undefined;
+    const errorMessage = data?.message || 'Something went wrong. Please try again.';
     
     return errorMessage;
   }
