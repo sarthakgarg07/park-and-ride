@@ -10,7 +10,24 @@ interface ParkingLocation {
   position: { x: number; y: number };
 }
 
-const ParkingMap = () => {
+// Optional props accepted for compatibility with callers that pass these
+interface ParkingMapProps {
+  facilities?: Array<{
+    id: number;
+    name: string;
+    address: string;
+    price: number;
+    availableSpots: number;
+    totalSpots: number;
+    rating: number;
+    distance: number;
+    amenities: string[];
+    coordinates: number[];
+  }>;
+  selectedId?: number | null;
+}
+
+const ParkingMap: React.FC<ParkingMapProps> = () => {
   const [zoom, setZoom] = useState(1);
   
   // These positions are relative coordinates for the SVG display
